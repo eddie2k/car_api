@@ -1,0 +1,6 @@
+FROM mdillon/postgis:9.5
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_DB=ally_cars
+COPY 10_init.sql /docker-entrypoint-initdb.d/
+COPY 20_load.sql /docker-entrypoint-initdb.d/
