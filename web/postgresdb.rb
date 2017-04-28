@@ -15,7 +15,7 @@ class PostgresDb
 	def getNClosestCars(lat, lon, n)
         begin
             conn = PG.connect(host:@dbhost, port:@dbport, dbname: @dbname, user: @dbuser, password: @dbpass)
-		    conn_result = conn.exec(getClosetsCarsQuery(lat, lon))
+		    conn_result = conn.exec(getClosetsCarsQuery(lat, lon, n))
 		    if conn_result.cmd_tuples==n
 			    jsonConverter = PgResultsConverter.new(conn_result, "cars")
 			    json = jsonConverter.toJson
@@ -31,8 +31,8 @@ class PostgresDb
         end
 	end
 	
-	def getClosetsCarsQuery(lat, lon)
-		"SELECT ST_X(coordinates) AS lat, ST_Y(coordinates) AS lon, description FROM ally_cars.cars ORDER BY coordinates <-> ST_SetSRID(ST_MakePoint ('" + lat.to_s + "','" + lon.to_s + "'), 4326) LIMIT 10;"
+	def getClosetsCarsQuery(lat, lon, n)
+		"SELECT ST_X(coordinates) AS lat, ST_Y(coordinates) AS lon, description FROM ally_cars.cars ORDER BY coordinates <-> ST_SetSRID(ST_MakePoint ('" + lat.to_s + "','" + lon.to_s + "'), 4326) LIMIT " + n.to_s + ";"
 	end
 end
 

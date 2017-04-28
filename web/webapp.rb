@@ -34,6 +34,6 @@ get '/cars' do
     rescue IOError => e
 		    halt 503, {'Content-Type' => 'text/plain'}, "Error connecting to the database"
     rescue NotEnoughCarsError => e
-		    halt 400, {'Content-Type' => 'text/plain'}, "Sorry, we couldn't find "+ NUMBER_OF_CARS + " suitable cars for your location"
+		    halt 400, {'Content-Type' => 'text/plain'}, "Sorry, we couldn't find "+ NUMBER_OF_CARS.to_s + " suitable cars for your location"
     end
 end
