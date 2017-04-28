@@ -1,0 +1,2 @@
+class NotEnoughCarsError < RuntimeError
+end

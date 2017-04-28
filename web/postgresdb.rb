@@ -1,5 +1,6 @@
 require 'pg'
 require 'json'
+require_relative 'errors'
 
 #Interacts with a PostgreSQL database. JSON-friendly.
 class PostgresDb
@@ -12,16 +13,22 @@ class PostgresDb
 	end
 	
 	def getNClosestCars(lat, lon, n)
-		conn = PG.connect(host:@dbhost, port:@dbport, dbname: @dbname, user: @dbuser, password: @dbpass )
-		conn_result = conn.exec(getClosetsCarsQuery(lat, lon))
-		if conn_result.cmd_tuples==n
-			jsonConverter = PgResultsConverter.new(conn_result, "cars")
-			json = jsonConverter.toJson
-			conn_result.clear
-			json
-		else
-			nil
-		end
+        begin
+            conn = PG.connect(host:@dbhost, port:@dbport, dbname: @dbname, user: @dbuser, password: @dbpass)
+		    conn_result = conn.exec(getClosetsCarsQuery(lat, lon))
+		    if conn_result.cmd_tuples==n
+			    jsonConverter = PgResultsConverter.new(conn_result, "cars")
+			    json = jsonConverter.toJson
+			    conn_result.clear
+			    json
+		    else
+                raise NotEnoughCarsError.new
+		    end
+        rescue PG::Error => e
+            raise IOError.new("Error connecting with the database")
+        ensure
+            conn.close if conn
+        end
 	end
 	
 	def getClosetsCarsQuery(lat, lon)

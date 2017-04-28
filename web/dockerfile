@@ -10,4 +10,5 @@ RUN bundle install
 COPY webapp.rb .
 COPY postgresdb.rb .
 COPY webparamparser.rb .
+COPY errors.rb .
 CMD ["ruby", "webapp.rb"]

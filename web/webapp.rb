@@ -1,6 +1,7 @@
 require 'sinatra'
 require_relative 'webparamparser'
 require_relative 'postgresdb'
+require_relative 'errors'
 
 APP_BIND_ADDRESS = '0.0.0.0'
 
@@ -21,14 +22,16 @@ get '/cars' do
 	if !paramParser.valid()
 		halt 400, {'Content-Type' => 'text/plain'}, "Incorrect usage or unsupported location! Usage example: /cars?location=12.345,-1.234"
 	end
-	
-	db = PostgresDb.new(DBHOST, DBPORT, DBNAME, DBUSER, DBPASSWORD)
-	json = db.getNClosestCars(paramParser.getLatitude(), paramParser.getLongitude(), 10)
-	if(json!=nil)
-		status 200
-		headers = {'Content-Type' => 'application/json'}
-		body json
-	else
-		halt 400, {'Content-Type' => 'text/plain'}, "Sorry, we couldn't find 10 suitable cars for your location"
-	end
+
+	begin
+	    db = PostgresDb.new(DBHOST, DBPORT, DBNAME, DBUSER, DBPASSWORD)
+	    json = db.getNClosestCars(paramParser.getLatitude(), paramParser.getLongitude(), 10)
+	    status 200
+	    headers = {'Content-Type' => 'application/json'}
+	    body json
+    rescue IOError => e
+		    halt 503, {'Content-Type' => 'text/plain'}, "Error connecting to the database"
+    rescue NotEnoughCarsError => e
+		    halt 400, {'Content-Type' => 'text/plain'}, "Sorry, we couldn't find 10 suitable cars for your location"
+    end
 end
