@@ -4,7 +4,6 @@ services:
     build: ./db
   web:
     build: ./web
-    command: ruby cars.rb
     ports:
       - "34001:4567"
     depends_on:
