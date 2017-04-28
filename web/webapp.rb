@@ -3,13 +3,15 @@ require 'pg'
 require 'json'
 require_relative 'webparamparser'
 
+APP_BIND_ADDRESS = '0.0.0.0'
+
 DBHOST = 'db'
 DBPORT= 5432
 DBNAME = 'ally_cars'
 DBUSER= 'postgres'
 DBPASSWORD = 'postgres'
 
-set :bind, '0.0.0.0'
+set :bind, APP_BIND_ADDRESS
 
 #Executes the HTTP magic; handles the connections, carries out the logic and returns the responses
 get '/cars' do
