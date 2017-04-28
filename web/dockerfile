@@ -2,7 +2,12 @@ FROM ruby:2.2.0
 RUN apt-get update && apt-get install -y \
 	build-essential \
 	libpq-dev
-RUN gem install sinatra && gem install pg && gem install json
-RUN mkdir mkdir /home/ally_cars
-WORKDIR  /home/ally_cars
-COPY cars.rb .
+
+WORKDIR /usr/app
+COPY Gemfile .
+COPY Gemfile.lock . 
+RUN bundle install
+COPY webapp.rb .
+COPY postgresdb.rb .
+COPY webparamparser.rb .
+CMD ["ruby", "webapp.rb"]
