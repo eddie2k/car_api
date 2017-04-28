@@ -1,6 +1,6 @@
 CREATE SCHEMA ally_cars AUTHORIZATION postgres;
 
-CREATE EXTENSION postgis SCHEMA public VERSION "2.2.3";
+CREATE EXTENSION postgis SCHEMA public VERSION "2.3.2";
 
 CREATE TABLE ally_cars.cars
 (
